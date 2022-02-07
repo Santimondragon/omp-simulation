@@ -8,6 +8,7 @@ const theme = {
     xLarge: "24px",
   },
   pallete: {
+    red: "#FF0000",
     blue: "#106FDF",
     white: "#FFFFFF",
     darkBlue: "#203147",

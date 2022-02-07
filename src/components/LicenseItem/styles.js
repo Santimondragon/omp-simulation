@@ -10,22 +10,22 @@ const LicenseItemContainer = styled.article`
   width: 100%;
   user-select: none;
 
-  * {
-    &::selection {
-      background-color: none;
-    }
-  }
-
-  &:last-child {
-    border: none;
+  &:nth-child(2) {
+    border-top: solid 1px ${theme.pallete.gray[2]};
   }
 
   .logo {
-    background-color: ${theme.pallete.gray[4]};
-    border-radius: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     height: ${theme.spacing(10)};
-    width: ${theme.spacing(10)};
-    min-width: ${theme.spacing(10)};
+    width: ${theme.spacing(8)};
+    min-width: ${theme.spacing(8)};
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+    }
   }
 
   .data {
@@ -65,7 +65,7 @@ const LicenseItemContainer = styled.article`
       height: ${theme.spacing(6)};
       width: ${theme.spacing(6)};
       min-width: ${theme.spacing(6)};
-      background-color: ${theme.pallete.gray[4]};
+      background-color: ${theme.pallete.gray[3]};
       border-radius: ${theme.spacing(1)};
     }
 
@@ -89,6 +89,22 @@ const LicenseItemContainer = styled.article`
         .add {
           background-color: ${theme.pallete.blue};
           color: ${theme.pallete.white};
+        }
+      }
+    `}
+
+  ${(props) =>
+    props.isModifiedable &&
+    css`
+      .setAmount {
+        .add,
+        .remove {
+          display: none;
+        }
+
+        .amount {
+          font-weight: bold;
+          font-size: ${theme.fontSize.medium};
         }
       }
     `}
