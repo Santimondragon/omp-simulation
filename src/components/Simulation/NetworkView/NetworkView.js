@@ -1,89 +1,142 @@
 import React, { useState, useEffect } from "react";
-import { NetworkViewContainer, RowLevel } from "../styles";
-
-const calculateLevelsAmount = (licenses) => {
-  if (licenses === 1) return 1;
-  if (licenses >= 2 && licenses < 4) return 2;
-  if (licenses >= 4 && licenses < 8) return 3;
-  if (licenses >= 8 && licenses < 16) return 4;
-  if (licenses >= 16 && licenses < 32) return 5;
-  return 6;
-};
-
-const getLevelDetails = (level) => {
-  const levelData = (level, licenseAmount) => {
-    return { level, licenseAmount };
-  };
-  if (level === 1) return levelData(1, 1);
-  if (level === 2) return levelData(2, 2);
-  if (level === 3) return levelData(3, 4);
-  if (level === 4) return levelData(4, 8);
-  if (level === 5) return levelData(5, 16);
-  return levelData(6, 32);
-};
-
-const test = {
-  license: "light",
-  value: 1000,
-  downline: [
-    {
-      license: "light",
-      value: 1000,
-      downline: [
-        {
-          license: "light",
-          value: 1000,
-          downline: [],
-        },
-        {
-          license: "light",
-          value: 1000,
-          downline: [],
-        },
-      ],
-    },
-    {
-      license: "light",
-      value: 1000,
-      downline: [
-        {
-          license: "light",
-          value: 1000,
-          downline: [],
-        },
-        {
-          license: "light",
-          value: 1000,
-          downline: [],
-        },
-      ],
-    },
-  ],
-};
+import formatNumber from "../../../utils/formatNumber";
+import { LicenseItem, NetworkViewContainer, RowLevel } from "../styles";
 
 const NetworkView = ({ selectedLicenses }) => {
-  const [levels, setLevels] = useState({});
-  const [networkTree, setNetworkTree] = useState({});
+  const [toBeAddLicenses, setToBeAddLicenses] = useState(selectedLicenses);
+  const [mainLicense, setMainLicense] = useState(null);
+  const [downline, setDownline] = useState([
+    [...Array(2)],
+    [...Array(4)],
+    [...Array(8)],
+    [...Array(16)],
+    [...Array(32)],
+  ]);
 
   useEffect(() => {
-    setLevels(calculateLevelsAmount(selectedLicenses.length));
-  }, [selectedLicenses]);
+    
+    if (toBeAddLicenses.length === 0) {
+      setDownline(
+        downline.map((level) =>
+          level.map((license) => {
+            if (license === undefined) return "none";
+            return license;
+          })
+        )
+      );
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toBeAddLicenses]);
+
+  const validateUndefinedValue = (prev, current) => {
+    if (!prev) return true;
+    if (current.every((e) => e === "none")) return false;
+
+    const hashmap = prev.reduce((acc, val) => {
+      acc[val] = (acc[val] || 0) + 1;
+      return acc;
+    }, {});
+
+    if (!hashmap["undefined"]) return true;
+    return prev.length / 2 >= hashmap["undefined"];
+  };
+
+  const onSelectLicense = (e, licenseObject) => {
+    const objectLicense = JSON.parse(e.target.value);
+    const { depth, isMain, index } = licenseObject;
+
+    if (isMain) {
+      setMainLicense(objectLicense);
+    } else {
+      const updatedDownline = [...downline];
+      updatedDownline[depth][index] = objectLicense;
+      setDownline(updatedDownline);
+    }
+
+    setToBeAddLicenses((state) => {
+      const index = state.map((e) => e.name).indexOf(objectLicense.name);
+      return state.filter((e, i) => i !== index);
+    });
+  };
+
+  const renderLicenseItem = (licenseObject) => {
+    const { license, isSelectable, isMain, index } = licenseObject;
+
+    const renderLicense = (renderedLicense) => {
+      return (
+        <article className="logo">
+          <img
+            src={`/assets/${renderedLicense?.value}.png`}
+            alt={`${renderedLicense?.name} badge`}
+          />
+        </article>
+      );
+    };
+    
+    const renderSelect = () => {
+      return (
+        <select value="" onChange={(e) => onSelectLicense(e, licenseObject)}>
+          <option value="" hidden>
+            License
+          </option>
+          {toBeAddLicenses.map((e, index) => (
+            <option key={`${index}-${e.name}`} value={JSON.stringify(e)}>
+              {index + 1}. {e.name} - {formatNumber(e.value, "$")}
+            </option>
+          ))}
+        </select>
+      );
+    };
+
+    if (isMain) {
+      return (
+        <LicenseItem>
+          {mainLicense ? renderLicense(mainLicense) : renderSelect()}
+        </LicenseItem>
+      );
+    }
+
+    return (
+      <LicenseItem key={index}>
+        {!isSelectable && license !== "none"
+          ? renderLicense(license)
+          : toBeAddLicenses.length
+          ? renderSelect()
+          : "-"}
+      </LicenseItem>
+    );
+  };
 
   const renderLevels = () => {
-    const levelsArray = [...Array(levels).keys()];
-    return levelsArray.map((e) => {
-      const { level, licenseAmount } = getLevelDetails(e + 1);
-      const amountArray = [...Array(licenseAmount).keys()];
-      return (
-        <RowLevel key={level} amount={licenseAmount}>
-          {amountArray.map((e) => (
-            <div key={e+level} className="license">
-              {e + 1}
-            </div>
-          ))}
-        </RowLevel>
-      );
-    });
+    const mainLicenseObject = {
+      isSelectable: true,
+      isMain: true,
+    };
+
+    return (
+      <>
+        <RowLevel amount={1}>{renderLicenseItem(mainLicenseObject)}</RowLevel>
+        {mainLicense &&
+          downline.map(
+            (level, depth) =>
+              validateUndefinedValue(downline[depth - 1], level) && (
+                <RowLevel key={level.length + 1} amount={level.length}>
+                  {level.map((license, index) => {
+                    const licenseObject = {
+                      depth: depth,
+                      license: license,
+                      isSelectable: !license,
+                      isMain: false,
+                      index: index,
+                    };
+
+                    return renderLicenseItem(licenseObject);
+                  })}
+                </RowLevel>
+              )
+          )}
+      </>
+    );
   };
 
   return (

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import formatNumber from "../../../utils/formatNumber";
 import { LICENSE } from "../../../constants";
 import simulateInvestment from "../../../utils/simulateInvestment";
 import {
@@ -6,18 +7,6 @@ import {
   SummaryContainer,
   SummaryItem,
 } from "../styles";
-
-const numFormat = (num, unit = "$") => {
-  if (unit === "%")
-    return Number.parseFloat(num).toLocaleString(undefined, {
-      style: "percent",
-      minimumFractionDigits: 2,
-    });
-  return Number.parseFloat(num).toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-  });
-};
 
 const Summary = ({ selectedLicenses }) => {
   const [simulation, setSimulation] = useState([]);
@@ -49,31 +38,24 @@ const Summary = ({ selectedLicenses }) => {
     );
   }, [selectedLicenses, withdrawlsAmount, withdrawlMonths, monthlyYield]);
 
-  const onChangeMonthlyYield = (operation) => {
-    if (operation === "+" && monthlyYield < 0.1)
-      setMonthlyYield((state) => (state += 0.001));
-    if (operation === "-" && monthlyYield > 0.08)
-      setMonthlyYield((state) => (state -= 0.001));
-  };
-
   const renderExpectedMontlyYield = () => {
     return (
       <MonthlyYieldContainer>
-        <span>Expected Monthly Yield</span>
-        <div className="setYield">
-          {monthlyYield > 0.08 && (
-            <div className="remove" onClick={() => onChangeMonthlyYield("-")}>
-              -
-            </div>
-          )}
-          <div className="monthlyYield">
+        <header>
+          <span className="title">Expected Monthly Yield</span>
+        </header>
+        <div className="inputWrapper">
+          <input
+            type="range"
+            min={0.08}
+            max={0.1}
+            step={0.001}
+            value={monthlyYield}
+            onChange={(e) => setMonthlyYield(Number.parseFloat(e.target.value))}
+          />
+          <span className="yield">
             {Number.parseFloat(monthlyYield * 100).toFixed(1)}%
-          </div>
-          {monthlyYield < 0.1 && (
-            <div className="add" onClick={() => onChangeMonthlyYield("+")}>
-              +
-            </div>
-          )}
+          </span>
         </div>
       </MonthlyYieldContainer>
     );
@@ -121,11 +103,11 @@ const Summary = ({ selectedLicenses }) => {
             <>
               <div className="detail">
                 <span>{fee}</span>
-                <span>{numFormat(totalFee)}</span>
+                <span>{formatNumber(totalFee)}</span>
               </div>
               <div className="detail">
                 <span>{license}</span>
-                <span>{numFormat(totalLicenses)}</span>
+                <span>{formatNumber(totalLicenses)}</span>
               </div>
             </>
           );
@@ -139,7 +121,7 @@ const Summary = ({ selectedLicenses }) => {
           return (
             <div key={item} className="detail">
               <span>{item}</span>
-              <span>{numFormat(total)}</span>
+              <span>{formatNumber(total)}</span>
             </div>
           );
         });
@@ -154,7 +136,7 @@ const Summary = ({ selectedLicenses }) => {
           )}
           <div className="total">
             <span>{reference}:</span>
-            <span>{numFormat(total, unit)}</span>
+            <span>{formatNumber(total, unit)}</span>
           </div>
         </SummaryItem>
       );
@@ -174,3 +156,19 @@ const Summary = ({ selectedLicenses }) => {
 };
 
 export default Summary;
+
+// <div className="setYield">
+//   {monthlyYield > 0.08 && (
+//     <div className="remove" onClick={() => onChangeMonthlyYield("-")}>
+//       -
+//     </div>
+//   )}
+//   <div className="monthlyYield">
+//     {Number.parseFloat(monthlyYield * 100).toFixed(1)}%
+//   </div>
+//   {monthlyYield < 0.1 && (
+//     <div className="add" onClick={() => onChangeMonthlyYield("+")}>
+//       +
+//     </div>
+//   )}
+// </div>;

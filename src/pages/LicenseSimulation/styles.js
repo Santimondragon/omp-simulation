@@ -22,7 +22,7 @@ const LicenseListContainer = styled.section`
   justify-content: space-evenly;
   background-color: white;
   border-radius: ${theme.spacing(1)};
-  box-shadow: 0 4px 8px -4px #00000077;
+  box-shadow: ${theme.shadows.container};
 
   header {
     width: 100%;

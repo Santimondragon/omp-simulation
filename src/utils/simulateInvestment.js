@@ -17,7 +17,7 @@ const simulateInvestment = (
     let revenue =
       license.value * Math.pow(1 + monthlyYield, DURATION) - license.value;
     if (revenue > license.value * 3) revenue = license.value * 3;
-    const profit = revenue * (1 - WITHDRWAL_FEE);
+    const profit = revenue * (1 - WITHDRWAL_FEE) - TRANSACTION_FEE;
 
     return {
       name: license.name,

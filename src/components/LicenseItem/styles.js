@@ -23,6 +23,7 @@ const LicenseItemContainer = styled.article`
     min-width: ${theme.spacing(8)};
 
     img {
+      filter: drop-shadow(${theme.shadows.filterItem});
       max-width: 100%;
       max-height: 100%;
     }

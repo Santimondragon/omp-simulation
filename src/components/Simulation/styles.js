@@ -8,7 +8,7 @@ const SummaryContainer = styled.div`
   justify-content: space-evenly;
   background-color: white;
   border-radius: ${theme.spacing(1)};
-  box-shadow: 0 4px 8px -4px #00000077;
+  box-shadow: ${theme.shadows.container};
 
   header {
     width: 100%;
@@ -18,55 +18,6 @@ const SummaryContainer = styled.div`
       font-size: ${theme.fontSize.medium};
       text-align: left;
       width: 100%;
-    }
-  }
-
-  .withdrawls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    label {
-      font-weight: bold;
-    }
-
-    .amount {
-      border: none;
-      border-radius: 4px;
-      box-shadow: inset 0 0 8px -2px #00000077;
-      font-size: 16px;
-      font-weight: bold;
-      padding: 12px;
-      padding-left: 14px;
-      padding-right: 0;
-      outline: none;
-      text-align: center;
-    }
-  }
-
-  .numbers {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-
-    & > div {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: solid 1px lightgray;
-
-      &:first-child {
-        padding-top: 0;
-      }
-
-      &:last-child {
-        padding-bottom: 0;
-        border: none;
-      }
-
-      span:last-child {
-        font-weight: bold;
-      }
     }
   }
 
@@ -82,39 +33,36 @@ const SummaryContainer = styled.div`
 
 const MonthlyYieldContainer = styled.div`
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: ${theme.spacing(3)} ${theme.spacing(4)};
   font-size: ${theme.fontSize.small};
   background-color: white;
   border-radius: ${theme.spacing(1)};
-  box-shadow: 0 4px 8px -4px #00000077;
+  box-shadow: ${theme.shadows.container};
   font-size: ${theme.fontSize.medium};
   font-weight: bold;
 
-  .setYield {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    font-size: ${theme.fontSize.small};
-    font-weight: normal;
+  header {
+    width: 100%;
+    padding: ${theme.spacing(3)} ${theme.spacing(4)};
 
-    .add,
-    .remove {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-weight: bold;
-      height: ${theme.spacing(6)};
-      width: ${theme.spacing(6)};
-      min-width: ${theme.spacing(6)};
-      background-color: ${theme.pallete.gray[3]};
-      border-radius: ${theme.spacing(1)};
+    .title {
+      font-size: ${theme.fontSize.medium};
+      text-align: left;
+      width: 100%;
     }
+  }
 
-    .monthlyYield {
-      margin: 0 ${theme.spacing(2)};
+  .inputWrapper {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: ${theme.spacing(1)} ${theme.spacing(4)} ${theme.spacing(3)};
+    gap: ${theme.spacing(3)};
+
+    input {
+      flex: 1 1 auto;
     }
   }
 `;
@@ -131,7 +79,6 @@ const NetworkViewContainer = styled.div`
 `;
 
 const RowLevel = styled.div`
-  flex: 1 1 auto;
   display: grid;
   justify-items: center;
   align-items: center;
@@ -139,6 +86,24 @@ const RowLevel = styled.div`
   gap: ${theme.spacing(2)};
   padding: ${theme.spacing(2)};
   border-bottom: dashed 1px ${theme.pallete.gray[4]};
+  height: ${theme.spacing(40)};
+`;
+
+const LicenseItem = styled.div`
+  .logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: ${theme.spacing(20)};
+    width: ${theme.spacing(18)};
+    min-width: ${theme.spacing(16)};
+
+    img {
+      filter: drop-shadow(${theme.shadows.filterItem});
+      max-width: 100%;
+      max-height: 100%;
+    }
+  }
 `;
 
 const SummaryItem = styled.div`
@@ -178,6 +143,7 @@ const SummaryItem = styled.div`
 `;
 
 export {
+  LicenseItem,
   MonthlyYieldContainer,
   NetworkViewContainer,
   SummaryContainer,
