@@ -71,7 +71,7 @@ const LicenseItemContainer = styled.article`
     }
 
     .add {
-      background-color: ${theme.pallete.white};
+     background-color: ${theme.pallete.white};;
       color: ${theme.pallete.blue};
     }
 

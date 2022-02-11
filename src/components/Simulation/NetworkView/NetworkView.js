@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useState, useEffect } from "react";
 import formatNumber from "../../../utils/formatNumber";
 import { LicenseItem, NetworkViewContainer, RowLevel } from "../styles";
@@ -14,7 +16,20 @@ const NetworkView = ({ selectedLicenses }) => {
   ]);
 
   useEffect(() => {
-    
+    if (mainLicense) {
+      setMainLicense((state) => {
+        return {
+          ...state,
+          salesCommission: formatNumber(getSalesCommission(downline), "$"),
+          networkCommission: formatNumber(getNetworkCommission(downline), "$"),
+          totalCommision: formatNumber(
+            getNetworkCommission(downline) + getSalesCommission(downline),
+            "$"
+          ),
+        };
+      });
+    }
+
     if (toBeAddLicenses.length === 0) {
       setDownline(
         downline.map((level) =>
@@ -25,8 +40,43 @@ const NetworkView = ({ selectedLicenses }) => {
         )
       );
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toBeAddLicenses]);
+
+  const getSideVolume = (array, side, depth = -1) => {
+    return array
+      .map((level, index) => {
+        const half = Math.ceil(level.length / 2);
+        if (index >= depth + 2) {
+          if (side === "left") {
+            return level.slice(0, half);
+          } else if (side === "rigth") return level.slice(-half);
+        }
+        return "none";
+      })
+      .flat()
+      .filter((e) => e !== undefined)
+      .filter((e) => e !== "none")
+      .map((e) => e.value)
+      .reduce((partialSum, a) => partialSum + a, 0);
+  };
+
+  const getNetworkCommission = (array) => {
+    const rigth = getSideVolume(array, "rigth");
+    const left = getSideVolume(array, "left");
+
+    if (rigth >= left) return left / 10;
+    return rigth / 10;
+  };
+
+  const getSalesCommission = (array) => {
+    const flatDownline = array
+      .flat()
+      .filter((e) => e !== undefined)
+      .filter((e) => e !== "none")
+      .map((e) => e.value);
+    const allSales = flatDownline.reduce((partialSum, a) => partialSum + a, 0);
+    return allSales * 0.07;
+  };
 
   const validateUndefinedValue = (prev, current) => {
     if (!prev) return true;
@@ -72,7 +122,7 @@ const NetworkView = ({ selectedLicenses }) => {
         </article>
       );
     };
-    
+
     const renderSelect = () => {
       return (
         <select value="" onChange={(e) => onSelectLicense(e, licenseObject)}>
@@ -91,7 +141,32 @@ const NetworkView = ({ selectedLicenses }) => {
     if (isMain) {
       return (
         <LicenseItem>
-          {mainLicense ? renderLicense(mainLicense) : renderSelect()}
+          {mainLicense ? (
+            <>
+              {renderLicense(mainLicense)}
+              <article className="commissions">
+                <header>
+                  <span className="title">Commissions</span>
+                </header>
+                <div className="details">
+                  <div className="detail">
+                    <span>Sales</span>
+                    <span>{mainLicense.salesCommission}</span>
+                  </div>
+                  <div className="detail">
+                    <span>Network</span>
+                    <span>{mainLicense.networkCommission}</span>
+                  </div>
+                </div>
+                <div className="total">
+                  <span>Total:</span>
+                  <span>{mainLicense.totalCommision}</span>
+                </div>
+              </article>
+            </>
+          ) : (
+            renderSelect()
+          )}
         </LicenseItem>
       );
     }
@@ -120,7 +195,11 @@ const NetworkView = ({ selectedLicenses }) => {
           downline.map(
             (level, depth) =>
               validateUndefinedValue(downline[depth - 1], level) && (
-                <RowLevel key={level.length + 1} amount={level.length}>
+                <RowLevel
+                  key={level.length / 2}
+                  level={level.length / 2}
+                  amount={level.length}
+                >
                   {level.map((license, index) => {
                     const licenseObject = {
                       depth: depth,
@@ -141,7 +220,9 @@ const NetworkView = ({ selectedLicenses }) => {
 
   return (
     <NetworkViewContainer>
-      <h3>Network View</h3>
+      <header>
+        <h3 className="title">Network View</h3>
+      </header>
       <div className="tree">{renderLevels()}</div>
     </NetworkViewContainer>
   );

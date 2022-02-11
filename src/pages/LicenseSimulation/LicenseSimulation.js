@@ -7,6 +7,7 @@ import SimulatorContainer, {
 } from "./styles";
 import LicenseItem from "../../components/LicenseItem";
 import Summary from "../../components/Simulation/Summary";
+import MonthlyView from "../../components/Simulation/MonthlyView";
 import NetworkView from "../../components/Simulation/NetworkView";
 
 const List = () => {
@@ -77,7 +78,11 @@ const List = () => {
       </section>
       {shouldRenderDetails && (
         <DetailsContainer>
-          <NetworkView selectedLicenses={simulatedLicenses} />
+          {simulatedLicenses.length > 1 ? (
+            <NetworkView selectedLicenses={simulatedLicenses} />
+          ) : (
+            <MonthlyView selectedLicenses={simulatedLicenses} />
+          )}
         </DetailsContainer>
       )}
     </SimulatorContainer>

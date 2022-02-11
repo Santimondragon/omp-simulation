@@ -20,6 +20,18 @@ const GlobalStyle = createGlobalStyle`
       border-radius:  ${theme.spacing(1)};
       cursor: pointer;
     }
+
+    header {
+      width: 100%;
+      padding: ${theme.spacing(3)} ${theme.spacing(4)};
+
+      .title {
+        font-size: ${theme.fontSize.medium};
+        font-weight: bold;
+        text-align: left;
+        width: 100%;
+      }
+    }
   }
 `;
 

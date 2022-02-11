@@ -156,19 +156,3 @@ const Summary = ({ selectedLicenses }) => {
 };
 
 export default Summary;
-
-// <div className="setYield">
-//   {monthlyYield > 0.08 && (
-//     <div className="remove" onClick={() => onChangeMonthlyYield("-")}>
-//       -
-//     </div>
-//   )}
-//   <div className="monthlyYield">
-//     {Number.parseFloat(monthlyYield * 100).toFixed(1)}%
-//   </div>
-//   {monthlyYield < 0.1 && (
-//     <div className="add" onClick={() => onChangeMonthlyYield("+")}>
-//       +
-//     </div>
-//   )}
-// </div>;

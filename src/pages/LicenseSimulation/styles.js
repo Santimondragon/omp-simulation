@@ -10,7 +10,7 @@ const SimulatorContainer = styled.div`
   .col {
     display: flex;
     flex-direction: column;
-    width: 360px;
+    width: 400px;
     gap: ${theme.spacing(2)};
   }
 `;
@@ -20,20 +20,9 @@ const LicenseListContainer = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  background-color: white;
+ background-color: ${theme.pallete.white};
   border-radius: ${theme.spacing(1)};
   box-shadow: ${theme.shadows.container};
-
-  header {
-    width: 100%;
-    padding: ${theme.spacing(3)} ${theme.spacing(4)};
-
-    .title {
-      font-size: ${theme.fontSize.medium};
-      text-align: left;
-      width: 100%;
-    }
-  }
 
   .actions {
     display: flex;

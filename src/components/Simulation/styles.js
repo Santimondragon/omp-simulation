@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import theme from "../../theme";
 
 const SummaryContainer = styled.div`
@@ -6,20 +6,9 @@ const SummaryContainer = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: space-evenly;
-  background-color: white;
+  background-color: ${theme.pallete.white};
   border-radius: ${theme.spacing(1)};
   box-shadow: ${theme.shadows.container};
-
-  header {
-    width: 100%;
-    padding: ${theme.spacing(3)} ${theme.spacing(4)};
-
-    .title {
-      font-size: ${theme.fontSize.medium};
-      text-align: left;
-      width: 100%;
-    }
-  }
 
   button {
     border: none;
@@ -37,22 +26,11 @@ const MonthlyYieldContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   font-size: ${theme.fontSize.small};
-  background-color: white;
+  background-color: ${theme.pallete.white};
   border-radius: ${theme.spacing(1)};
   box-shadow: ${theme.shadows.container};
   font-size: ${theme.fontSize.medium};
   font-weight: bold;
-
-  header {
-    width: 100%;
-    padding: ${theme.spacing(3)} ${theme.spacing(4)};
-
-    .title {
-      font-size: ${theme.fontSize.medium};
-      text-align: left;
-      width: 100%;
-    }
-  }
 
   .inputWrapper {
     display: flex;
@@ -67,14 +45,45 @@ const MonthlyYieldContainer = styled.div`
   }
 `;
 
-const NetworkViewContainer = styled.div`
+const MonthlyViewContainer = styled.div`
   flex: 1 1 auto;
   height: 100%;
+  background-color: ${theme.pallete.white};
+  border-radius: ${theme.spacing(1)};
+  box-shadow: ${theme.shadows.container};
+
+  header {
+    border-bottom: dashed 1px ${theme.pallete.gray[4]};
+    
+    .title {
+      font-size: ${theme.fontSize.large};
+    }
+  }
 
   .tree {
     display: flex;
     flex-direction: column;
-    height: 100%;
+  }
+`;
+
+const NetworkViewContainer = styled.div`
+  flex: 1 1 auto;
+  height: 100%;
+  background-color: ${theme.pallete.white};
+  border-radius: ${theme.spacing(1)};
+  box-shadow: ${theme.shadows.container};
+
+  header {
+    border-bottom: dashed 1px ${theme.pallete.gray[4]};
+
+    .title {
+      font-size: ${theme.fontSize.large};
+    }
+  }
+
+  .tree {
+    display: flex;
+    flex-direction: column;
   }
 `;
 
@@ -85,11 +94,20 @@ const RowLevel = styled.div`
   grid-template-columns: ${(props) => `repeat(${props.amount}, 1fr)`};
   gap: ${theme.spacing(2)};
   padding: ${theme.spacing(2)};
-  border-bottom: dashed 1px ${theme.pallete.gray[4]};
   height: ${theme.spacing(40)};
+  background-color: ${theme.pallete.gray[1]};
+  border-bottom: dashed 1px ${theme.pallete.gray[4]};
+
+  ${(props) =>
+    (props.level % 2 || !props.level === 0) &&
+    css`
+      background-color: ${theme.pallete.white};
+    `}
 `;
 
 const LicenseItem = styled.div`
+  position: relative;
+
   .logo {
     display: flex;
     align-items: center;
@@ -102,6 +120,46 @@ const LicenseItem = styled.div`
       filter: drop-shadow(${theme.shadows.filterItem});
       max-width: 100%;
       max-height: 100%;
+    }
+  }
+
+  .commissions {
+    position: absolute;
+    top: -${theme.spacing(5)};
+    left: calc(100% + ${theme.spacing(5)});
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    background-color: ${theme.pallete.white};
+    border-radius: ${theme.spacing(1)};
+    box-shadow: ${theme.shadows.container};
+    width: ${theme.spacing(55)};
+
+    .details {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      gap: ${theme.spacing(1)};
+      padding: ${theme.spacing(2)} ${theme.spacing(4)} 0;
+      border-top: solid 1px ${theme.pallete.gray[2]};
+
+      .detail {
+        display: flex;
+        justify-content: space-between;
+        font-size: ${theme.fontSize.small};
+        color: ${theme.pallete.darkGray};
+      }
+    }
+
+    .total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: bold;
+      width: 100%;
+      text-transform: capitalize;
+      padding: ${theme.spacing(2)} ${theme.spacing(4)};
     }
   }
 `;
@@ -145,6 +203,7 @@ const SummaryItem = styled.div`
 export {
   LicenseItem,
   MonthlyYieldContainer,
+  MonthlyViewContainer,
   NetworkViewContainer,
   SummaryContainer,
   SummaryItem,
