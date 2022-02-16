@@ -3,6 +3,7 @@ import formatNumber from "../../../utils/formatNumber";
 import { LICENSE } from "../../../constants";
 import simulateInvestment from "../../../utils/simulateInvestment";
 import {
+  ModifiersContainer,
   MonthlyYieldContainer,
   SummaryContainer,
   SummaryItem,
@@ -13,6 +14,7 @@ const Summary = ({ selectedLicenses }) => {
   const [withdrawlsAmount, setWithdrawlsAmount] = useState(1);
   const [withdrawlMonths, setWithdrawlMonths] = useState([16]);
   const [monthlyYield, setMonthlyYield] = useState(0.091);
+  const [transactionFee, setTransactionFee] = useState(36);
 
   useEffect(() => {
     if (withdrawlsAmount > 16) setWithdrawlsAmount(14);
@@ -38,24 +40,30 @@ const Summary = ({ selectedLicenses }) => {
     );
   }, [selectedLicenses, withdrawlsAmount, withdrawlMonths, monthlyYield]);
 
-  const renderExpectedMontlyYield = () => {
+  const renderValueModifier = (
+    title,
+    state,
+    setState,
+    min,
+    max,
+    step,
+    valueUnit
+  ) => {
     return (
       <MonthlyYieldContainer>
         <header>
-          <span className="title">Expected Monthly Yield</span>
+          <span className="title">{title}</span>
         </header>
         <div className="inputWrapper">
           <input
             type="range"
-            min={0.08}
-            max={0.1}
-            step={0.001}
-            value={monthlyYield}
-            onChange={(e) => setMonthlyYield(Number.parseFloat(e.target.value))}
+            min={min}
+            max={max}
+            step={step}
+            value={state}
+            onChange={(e) => setState(Number.parseFloat(e.target.value))}
           />
-          <span className="yield">
-            {Number.parseFloat(monthlyYield * 100).toFixed(1)}%
-          </span>
+          <span className="yield">{formatNumber(state, valueUnit)}</span>
         </div>
       </MonthlyYieldContainer>
     );
@@ -67,13 +75,15 @@ const Summary = ({ selectedLicenses }) => {
       let values = e[1];
       const valuesIsArray = Array.isArray(values);
       const refIsLicense = reference === "license";
-      const refIsInvestment = reference === "investment";
+      const refIsInvestment = reference === "total";
       const shouldRenderDetails =
         valuesIsArray && (refIsLicense || refIsInvestment);
       const unit = valuesIsArray ? "$" : "%";
-      const total = valuesIsArray
+      let total = valuesIsArray
         ? values.reduce((partialSum, a) => partialSum + a[1], 0)
         : e[1];
+
+      if (refIsInvestment) total += transactionFee;
 
       if (shouldRenderDetails) {
         values.sort((a, b) => a[1] - b[1]);
@@ -88,19 +98,23 @@ const Summary = ({ selectedLicenses }) => {
 
       const renderDetails = (isInvestment) => {
         if (isInvestment && selectedLicenses.length > 0) {
-          const feeValue = LICENSE.COST + LICENSE.TRANSACTION_FEE;
+          const feeValue = LICENSE.COST;
           const hasMoreThanOne = selectedLicenses.length > 1;
-          const fee = `Fee${
+          const fee = `Licence Cost${
             hasMoreThanOne ? `s (x${selectedLicenses.length})` : ""
           }`;
           const totalFee = feeValue * selectedLicenses.length;
-          const license = `License${
+          const license = `Investment${
             hasMoreThanOne ? `s (x${selectedLicenses.length})` : ""
           }`;
-          const totalLicenses = total - totalFee;
+          const totalLicenses = total - totalFee - transactionFee;
 
           return (
             <>
+              <div className="detail">
+                <span>Transaction Fee</span>
+                <span>{formatNumber(transactionFee)}</span>
+              </div>
               <div className="detail">
                 <span>{fee}</span>
                 <span>{formatNumber(totalFee)}</span>
@@ -144,7 +158,26 @@ const Summary = ({ selectedLicenses }) => {
 
   return (
     <>
-      {renderExpectedMontlyYield()}
+      <ModifiersContainer>
+        {renderValueModifier(
+          "Monthly Yield",
+          monthlyYield,
+          setMonthlyYield,
+          0.08,
+          0.1,
+          0.001,
+          "%"
+        )}
+        {renderValueModifier(
+          "Transaction Fee",
+          transactionFee,
+          setTransactionFee,
+          20,
+          50,
+          1,
+          "$"
+        )}
+      </ModifiersContainer>
       <SummaryContainer>
         <header>
           <h3 className="title">Investment Summary</h3>

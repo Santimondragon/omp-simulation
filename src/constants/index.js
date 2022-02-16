@@ -63,7 +63,6 @@ const LICENSE = {
   ],
   DURATION: 16, // 16 Months
   COST: 49,
-  TRANSACTION_FEE: 36,
   WITHDRWAL_FEE: 0.05, // 5%
   WITHDRWAL_PENALTY: 0.3, // 30%
 };

@@ -19,7 +19,10 @@ const LicenseItem = ({
       isModifiedable={isModifiedable}
     >
       <article className="logo">
-        <img src={`/assets/${value}.png`} alt={`${name} badge`} />
+        <img
+          src={`${process.env.PUBLIC_URL}/assets/${value}.png`}
+          alt={`${name} badge`}
+        />
       </article>
       <article className="data">
         <span className="value">${value}</span>

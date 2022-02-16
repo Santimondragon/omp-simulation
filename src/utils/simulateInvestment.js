@@ -10,31 +10,31 @@ const simulateInvestment = (
   withdrawlMonths = [16],
   monthlyYield = 0.091
 ) => {
-  const { DURATION, COST, TRANSACTION_FEE, WITHDRWAL_FEE } = LICENSE;
+  const { DURATION, COST, WITHDRWAL_FEE } = LICENSE;
 
   const simulations = licenses.map((license) => {
-    const investment = license.value + COST + TRANSACTION_FEE;
+    const total = license.value + COST;
     let revenue =
       license.value * Math.pow(1 + monthlyYield, DURATION) - license.value;
     if (revenue > license.value * 3) revenue = license.value * 3;
-    const profit = revenue * (1 - WITHDRWAL_FEE) - TRANSACTION_FEE;
+    const profit = revenue * (1 - WITHDRWAL_FEE);
 
     return {
       name: license.name,
       license: license.value,
-      investment,
+      total,
       revenue,
       profit,
     };
   });
 
   const allLicenses = getTotalvalue(simulations, "license");
-  const investment = getTotalvalue(simulations, "investment");
+  const total = getTotalvalue(simulations, "total");
   const revenue = getTotalvalue(simulations, "revenue");
   const profit = getTotalvalue(simulations, "profit");
 
   const getProfitPercentage = () => {
-    const totalInvestmet = investment.reduce(
+    const totalInvestmet = total.reduce(
       (partialSum, a) => partialSum + a[1],
       0
     );
@@ -46,7 +46,7 @@ const simulateInvestment = (
 
   return {
     license: allLicenses,
-    investment,
+    total,
     revenue,
     profit,
     profitPercentage: getProfitPercentage(),

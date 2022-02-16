@@ -116,7 +116,7 @@ const NetworkView = ({ selectedLicenses }) => {
       return (
         <article className="logo">
           <img
-            src={`/assets/${renderedLicense?.value}.png`}
+            src={`${process.env.PUBLIC_URL}/assets/${renderedLicense?.value}.png`}
             alt={`${renderedLicense?.name} badge`}
           />
         </article>
