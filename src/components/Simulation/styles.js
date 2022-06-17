@@ -44,6 +44,7 @@ const MonthlyYieldContainer = styled.div`
     padding: ${theme.spacing(1)} ${theme.spacing(4)} ${theme.spacing(3)};
 
     input {
+      cursor: pointer;
       flex: 1 1 auto;
       margin-right: ${theme.spacing(3)};
       width: calc(100% - ${theme.spacing(3)});

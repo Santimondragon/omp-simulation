@@ -44,6 +44,7 @@ const Summary = ({ selectedLicenses }) => {
     title,
     state,
     setState,
+    defaultValue,
     min,
     max,
     step,
@@ -54,7 +55,10 @@ const Summary = ({ selectedLicenses }) => {
         <header>
           <span className="title">{title}</span>
         </header>
-        <div className="inputWrapper">
+        <div
+          className="inputWrapper"
+          onDoubleClick={(e) => setState(defaultValue)}
+        >
           <input
             type="range"
             min={min}
@@ -163,6 +167,7 @@ const Summary = ({ selectedLicenses }) => {
           "Monthly Yield",
           monthlyYield,
           setMonthlyYield,
+          0.091,
           0.08,
           0.1,
           0.001,
@@ -172,8 +177,9 @@ const Summary = ({ selectedLicenses }) => {
           "Transaction Fee",
           transactionFee,
           setTransactionFee,
-          20,
-          50,
+          36,
+          0,
+          100,
           1,
           "$"
         )}
